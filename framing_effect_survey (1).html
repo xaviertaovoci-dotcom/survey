@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision-Making Under Uncertainty — AP Psychology Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1a2e; --ink-soft: #3d3d5c; --ink-muted: #6b6b8a;
+  --rule: #d8d8e8; --bg: #f0f0f5; --white: #ffffff;
+  --ac: #185FA5; --al: #e6f1fb; --bc: #8B2500; --bl: #faeae4;
+  --greenl: #e8f3de; --r: 10px; --rs: 6px;
+}
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; padding: 1.5rem 1rem 4rem; line-height: 1.5; }
+.wrap { max-width: 620px; margin: 0 auto; }
+.wrap-wide { max-width: 680px; margin: 0 auto; }
+.view { display: none; }
+.view.active { display: block; }
+.card { background: var(--white); border: 1px solid var(--rule); border-radius: var(--r); padding: 1.25rem; margin-bottom: 14px; }
+.inset { background: #f6f6fa; border: 1px solid var(--rule); border-radius: var(--rs); padding: 12px 16px; }
+.eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+h1 { font-size: 28px; font-weight: 600; line-height: 1.2; margin-bottom: 6px; }
+h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+.sub { font-family: 'Crimson Pro', serif; font-style: italic; font-size: 17px; color: var(--ink-muted); }
+.scenario-text { font-family: 'Crimson Pro', serif; font-style: italic; font-size: 15.5px; line-height: 1.6; padding: 10px 14px; background: #f6f6fa; border-radius: var(--rs); margin: 10px 0; border-left-width: 3px; border-left-style: solid; }
+.prog-track { height: 4px; background: var(--rule); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+.prog-fill { height: 100%; border-radius: 4px; transition: width 0.35s ease; }
+.likert { display: flex; gap: 6px; margin-top: 12px; }
+.lbtn { flex: 1; padding: 10px 4px; border: 1px solid var(--rule); border-radius: var(--rs); background: var(--white); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.lbtn .lnum { font-size: 19px; font-weight: 600; line-height: 1; color: var(--ink-muted); }
+.lbtn .llbl { font-size: 9px; color: var(--ink-muted); text-align: center; line-height: 1.3; }
+.btn-primary { display: block; width: 100%; padding: 14px 24px; border: none; border-radius: var(--rs); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; text-align: center; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-sec { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--rule); border-radius: var(--rs); background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink-muted); cursor: pointer; }
+.btn-sec:hover { border-color: #aaa; color: var(--ink); }
+.btn-ghost { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--ink-muted); cursor: pointer; text-decoration: underline; }
+.consent-box { border-left: 3px solid var(--ac); border-radius: 0 var(--rs) var(--rs) 0; padding: 14px 18px; margin-bottom: 1.25rem; background: var(--al); }
+.consent-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ac); margin-bottom: 8px; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+.metric-card { background: #f6f6fa; border-radius: var(--rs); padding: 12px; }
+.metric-label { font-size: 11px; color: var(--ink-muted); margin-bottom: 4px; }
+.metric-val { font-size: 26px; font-weight: 600; }
+.results-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.results-table th { font-weight: 500; font-size: 11px; padding: 6px 10px; border-bottom: 1px solid var(--rule); text-align: left; color: var(--ink-muted); }
+.results-table td { padding: 9px 10px; border-bottom: 1px solid #eeeeee; }
+.step { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--rule); }
+.step:last-child { border-bottom: none; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--ac); color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.step-body { font-size: 13.5px; color: var(--ink-soft); line-height: 1.65; }
+.step-title { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 4px; }
+code { display: block; font-family: 'Courier New', monospace; font-size: 12px; background: #eeeef6; padding: 8px 12px; border-radius: var(--rs); margin-top: 8px; white-space: pre-wrap; word-break: break-all; color: #2a2a4a; line-height: 1.7; }
+code.inline { display: inline; padding: 2px 6px; white-space: nowrap; }
+.scale-legend { display: flex; gap: 5px; margin-bottom: 1.25rem; }
+.scale-item { flex: 1; text-align: center; padding: 7px 3px; background: var(--white); border: 1px solid var(--rule); border-radius: var(--rs); }
+.scale-num { font-size: 17px; font-weight: 600; line-height: 1; }
+.scale-lbl { font-size: 9px; color: var(--ink-muted); line-height: 1.3; white-space: pre-line; margin-top: 3px; }
+.spin-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 3rem; color: var(--ink-muted); font-size: 14px; }
+.spin { width: 22px; height: 22px; border: 2.5px solid var(--rule); border-top-color: var(--ac); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 480px) { body { padding: 1rem 0.75rem 3rem; } h1 { font-size: 24px; } .llbl { display: none; } .metric-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ── SETUP VIEW ──────────────────────────────────────────────── -->
+<div class="view active" id="view-setup">
+<div class="wrap">
+  <div style="text-align:center; margin-bottom:1.75rem; padding-top:1rem">
+    <div class="eyebrow">One-time setup · about 3 minutes</div>
+    <h1>Connect JSONBin</h1>
+    <p class="sub">A free mini-database that needs only a personal email.</p>
+  </div>
+  <div class="card">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Create a free JSONBin account</div>
+        Go to <strong>jsonbin.io</strong> → click <em>Sign Up</em>. Use any personal email — takes about 30 seconds. No credit card.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Get your Master Key</div>
+        After logging in, click your profile icon (top right) → <strong>API Keys</strong>. Copy the <em>Master Key</em> — it starts with <code class="inline">$2a$10$...</code>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Create a new bin</div>
+        Click the <strong>+</strong> button (or <em>Create Bin</em>) in your JSONBin dashboard. In the editor, type <code class="inline">[]</code> as the content (just two square brackets — an empty list). Give it the name <em>survey-responses</em>. Click <strong>Create</strong>. The Bin ID will appear in the URL bar — it looks like <code class="inline">6651a3f...</code> — copy it.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Paste both values into this file</div>
+        Open <strong>framing_effect_survey.html</strong> in any text editor. Find these two lines near the top of the script and replace the placeholders:
+        <code>const BIN_ID     = 'YOUR_BIN_ID';
+const MASTER_KEY = 'YOUR_MASTER_KEY';</code>
+        Save the file and open it in your browser — this setup screen disappears.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Deploy on Netlify Drop</div>
+        Go to <strong>app.netlify.com/drop</strong>, drag your edited file onto the page. You get a free public URL in about 10 seconds — share that with your class!
+      </div>
+    </div>
+  </div>
+  <p style="text-align:center; font-size:12px; color:#aaa; margin-top:4px">After step 4, re-open the file locally to confirm the setup screen is gone before uploading to Netlify.</p>
+</div>
+</div>
+
+<!-- ── CONSENT VIEW ────────────────────────────────────────────── -->
+<div class="view" id="view-consent">
+<div class="wrap">
+  <div style="text-align:center; margin-bottom:1.5rem; padding-top:1rem">
+    <div class="eyebrow" style="color:var(--ac)">AP Psychology · Risk Perception Study</div>
+    <h1>Decision-Making<br>Under Uncertainty</h1>
+    <p class="sub">A study on risk perception and behavioral choice</p>
+  </div>
+  <div class="consent-box">
+    <div class="consent-label">Informed Consent &amp; Confidentiality</div>
+    <p style="font-size:14px; color:var(--ink-soft); line-height:1.7">This survey is part of an AP Psychology research project examining how people perceive risk when making decisions. Your participation is voluntary and you may stop at any time. <strong>All responses are completely anonymous</strong> — no names or identifying information are collected. Data will be used only for academic analysis within this class. By continuing, you agree to participate.</p>
+  </div>
+  <div class="inset" style="margin-bottom:1.25rem">
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--ink-soft)"><span style="font-size:17px">📋</span>5 short scenarios — takes about 3 to 5 minutes</div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--ink-soft)"><span style="font-size:17px">🔒</span>Completely anonymous — no names collected</div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--ink-soft)"><span style="font-size:17px">📊</span>Results analyzed for the framing effect</div>
+    </div>
+  </div>
+  <button class="btn-primary" style="background:var(--ac); color:#fff; margin-bottom:12px" onclick="startSurvey()">Begin Survey</button>
+  <div style="text-align:center"><button class="btn-ghost" onclick="loadResults()">View Results (Researcher Access)</button></div>
+</div>
+</div>
+
+<!-- ── SURVEY VIEW ─────────────────────────────────────────────── -->
+<div class="view" id="view-survey">
+<div class="wrap">
+  <div style="margin-bottom:1.5rem">
+    <div class="eyebrow" style="color:var(--ac)">AP Psychology · Risk Perception Study</div>
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px">
+      <h2>Rate Each Scenario</h2>
+      <span id="prog-label" style="font-size:13px; color:var(--ink-muted)">0 of 5</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="prog-bar" style="width:0%"></div></div>
+  </div>
+  <div class="inset" style="margin-bottom:1.25rem; font-size:13px; color:var(--ink-soft); line-height:1.6">
+    <strong style="color:var(--ink)">Instructions:</strong> For each scenario, select how willing you would be to take the described action. There are no right or wrong answers — go with your honest first impression.
+  </div>
+  <div class="scale-legend">
+    <div class="scale-item"><div class="scale-num" id="sleg-1">1</div><div class="scale-lbl">Definitely&#10;Would NOT</div></div>
+    <div class="scale-item"><div class="scale-num" id="sleg-2">2</div><div class="scale-lbl">Probably&#10;Would NOT</div></div>
+    <div class="scale-item"><div class="scale-num" id="sleg-3">3</div><div class="scale-lbl">Neutral /&#10;Unsure</div></div>
+    <div class="scale-item"><div class="scale-num" id="sleg-4">4</div><div class="scale-lbl">Probably&#10;WOULD</div></div>
+    <div class="scale-item"><div class="scale-num" id="sleg-5">5</div><div class="scale-lbl">Definitely&#10;WOULD</div></div>
+  </div>
+  <div id="questions-container"></div>
+  <div id="submit-err" style="color:var(--bc); font-size:13px; margin-bottom:10px; display:none">Submission failed — please check your connection and try again.</div>
+  <button class="btn-primary" id="submit-btn" disabled onclick="submitSurvey()" style="background:#e0e0ec; color:#999">Answer all scenarios to continue</button>
+</div>
+</div>
+
+<!-- ── DONE VIEW ───────────────────────────────────────────────── -->
+<div class="view" id="view-done">
+<div class="wrap" style="text-align:center; padding-top:2rem">
+  <div style="width:58px; height:58px; border-radius:50%; background:var(--greenl); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:28px">✓</div>
+  <h1 style="margin-bottom:10px">Thank you!</h1>
+  <p style="font-size:15px; color:var(--ink-muted); line-height:1.7; max-width:440px; margin:0 auto 2rem">Your response has been recorded. The data will be analyzed to see whether how information is framed affects risk-taking decisions — even when the underlying numbers are identical.</p>
+  <div class="inset" style="text-align:left; max-width:500px; margin:0 auto 2rem">
+    <p style="font-weight:600; margin-bottom:5px">What happens next?</p>
+    <p style="font-size:13px; color:var(--ink-muted); line-height:1.65">Once all responses are in, the researcher will open the results dashboard to compare willingness scores between the two survey versions. If positive framing scores higher than negative framing — for statistically identical information — the framing effect is confirmed.</p>
+  </div>
+  <button class="btn-ghost" onclick="loadResults()">View Results (Researcher Access)</button>
+</div>
+</div>
+
+<!-- ── RESULTS VIEW ────────────────────────────────────────────── -->
+<div class="view" id="view-results">
+<div class="wrap-wide">
+  <div style="display:flex; align-items:center; gap:12px; margin-bottom:1.5rem">
+    <button class="btn-sec" onclick="showView('consent')">← Back</button>
+    <div style="flex:1">
+      <div class="eyebrow">AP Psychology · Framing Effect Study</div>
+      <h2 style="margin-bottom:0">Results Dashboard</h2>
+    </div>
+    <button class="btn-sec" onclick="loadResults()">↺ Refresh</button>
+  </div>
+  <div id="results-loading" class="spin-wrap" style="display:none"><div class="spin"></div>Loading responses…</div>
+  <div id="results-empty" style="display:none; text-align:center; padding:3rem 2rem">
+    <p style="font-size:36px; margin-bottom:12px">📭</p>
+    <p style="font-size:16px; font-weight:600; margin-bottom:6px">No responses yet</p>
+    <p style="font-size:14px; color:var(--ink-muted)">Share the survey URL with participants to start collecting data.</p>
+  </div>
+  <div id="results-content" style="display:none">
+    <div class="metric-grid" id="stats-grid"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem" id="ver-cards"></div>
+    <div class="card">
+      <p style="font-weight:600; margin-bottom:4px">Average willingness score per question</p>
+      <p style="font-size:12px; color:var(--ink-muted); margin-bottom:1rem">Blue = positive framing (A) · Burgundy = negative framing (B) · Dashed line = neutral midpoint (3)</p>
+      <div style="overflow-x:auto"><svg id="bar-chart" viewBox="0 0 640 220" style="width:100%; min-width:360px; display:block"></svg></div>
+      <div style="display:flex; gap:16px; justify-content:center; margin-top:12px; font-size:12px; color:var(--ink-muted)">
+        <span><span style="display:inline-block; width:12px; height:12px; background:#185FA5; border-radius:2px; margin-right:5px; vertical-align:-1px"></span>Positive framing (Version A)</span>
+        <span><span style="display:inline-block; width:12px; height:12px; background:#8B2500; border-radius:2px; margin-right:5px; vertical-align:-1px"></span>Negative framing (Version B)</span>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-weight:600; margin-bottom:1rem">Question breakdown</p>
+      <table class="results-table" id="results-table"></table>
+    </div>
+    <button class="btn-sec" onclick="exportCSV()">↓ Export all data as CSV</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+//  Paste your JSONBin credentials here.
+//  Get them from: jsonbin.io → profile icon → API Keys (Master Key)
+//                 jsonbin.io → create a bin with [] → copy the Bin ID
+const BIN_ID     = '6a185e23ddf5aa59f7706358';
+const MASTER_KEY = '$2a$10$.cu2UPy135cYWILr0WKqe.jIIMfc5.mqU1tXQM/7SUKkZuYPY0s32 ';
+// ─────────────────────────────────────────────────────────────────────────
+
+const CONFIGURED = !BIN_ID.includes('YOUR_');
+const AC = '#185FA5', BC = '#8B2500', AL = '#e6f1fb', BL = '#faeae4';
+
+const SCENARIOS = [
+  { topic:'Tutoring Program',  cat:'Academic Support',
+    pos:'A new tutoring program helps 80% of students pass a difficult exam.',
+    neg:'A new tutoring program fails to help 20% of students pass a difficult exam.',
+    q:  'How willing would you be to enroll in this tutoring program?' },
+  { topic:'Medical Treatment', cat:'Healthcare',
+    pos:'A new medical treatment successfully cures 90% of patients.',
+    neg:'A new medical treatment fails to cure 10% of patients.',
+    q:  'How willing would you be to undergo this medical treatment?' },
+  { topic:'Driving Assistance',cat:'Transportation',
+    pos:'A new driving-assistance system prevents 85% of accidents.',
+    neg:'A new driving-assistance system fails to prevent 15% of accidents.',
+    q:  'How willing would you be to use this driving-assistance system?' },
+  { topic:'Fitness Program',   cat:'Wellness',
+    pos:'A new school fitness program improves health in 75% of participants.',
+    neg:'A new school fitness program does not improve health in 25% of participants.',
+    q:  'How willing would you be to join this fitness program?' },
+  { topic:'Phone Security',    cat:'Technology',
+    pos:'A new phone security system successfully protects 95% of users from hackers.',
+    neg:'A new phone security system fails to protect 5% of users from hackers.',
+    q:  'How willing would you be to install this phone security system?' }
+];
+
+const SCALE_LABELS = ['Definitely\nWould NOT','Probably\nWould NOT','Neutral /\nUnsure','Probably\nWOULD','Definitely\nWOULD'];
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const HEADERS = { 'Content-Type':'application/json', 'X-Master-Key': MASTER_KEY };
+
+let version = Math.random() < 0.5 ? 'A' : 'B';
+let answers  = Array(5).fill(null);
+let allData  = [];
+
+// ── JSONBin helpers ────────────────────────────────────────────────────────
+async function binRead() {
+  const r = await fetch(BIN_URL + '/latest', { headers: HEADERS });
+  if (!r.ok) throw new Error('read failed');
+  const j = await r.json();
+  return Array.isArray(j.record) ? j.record : [];
+}
+
+async function binWrite(data) {
+  const r = await fetch(BIN_URL, {
+    method: 'PUT',
+    headers: HEADERS,
+    body: JSON.stringify(data)
+  });
+  if (!r.ok) throw new Error('write failed');
+}
+
+// ── View helpers ───────────────────────────────────────────────────────────
+function showView(name) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function vc() { return version === 'A' ? AC : BC; }
+function vl() { return version === 'A' ? AL : BL; }
+
+// ── Survey ─────────────────────────────────────────────────────────────────
+function startSurvey() {
+  ['1','2','3','4','5'].forEach(n => {
+    const el = document.getElementById('sleg-' + n);
+    if (el) el.style.color = vc();
+  });
+  document.getElementById('prog-bar').style.background = vc();
+
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  SCENARIOS.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'card'; div.id = 'qcard-' + i;
+    const badge = document.createElement('div');
+    badge.style.cssText = 'display:flex; gap:8px; align-items:center; margin-bottom:10px';
+    const span = document.createElement('span');
+    span.id = 'badge-' + i;
+    span.style.cssText = 'font-size:10px; font-weight:600; padding:2px 9px; border-radius:4px; background:#f0f0f8; color:#888; border:1px solid #e0e0ec; transition:all 0.2s';
+    span.textContent = 'Scenario ' + (i + 1);
+    const cat = document.createElement('span');
+    cat.style.cssText = 'font-size:12px; color:#888';
+    cat.textContent = s.cat;
+    badge.appendChild(span); badge.appendChild(cat);
+    const scen = document.createElement('p');
+    scen.className = 'scenario-text'; scen.style.borderLeftColor = vc();
+    scen.textContent = version === 'A' ? s.pos : s.neg;
+    const prompt = document.createElement('p');
+    prompt.style.cssText = 'font-size:13px; color:var(--ink-muted); margin-bottom:10px';
+    prompt.textContent = s.q;
+    const likert = document.createElement('div');
+    likert.className = 'likert';
+    for (let v = 1; v <= 5; v++) {
+      const btn = document.createElement('button');
+      btn.className = 'lbtn'; btn.id = `lbtn-${i}-${v}`;
+      btn.innerHTML = `<span class="lnum">${v}</span><span class="llbl">${SCALE_LABELS[v-1]}</span>`;
+      btn.addEventListener('click', () => selectAnswer(i, v));
+      likert.appendChild(btn);
+    }
+    div.appendChild(badge); div.appendChild(scen); div.appendChild(prompt); div.appendChild(likert);
+    container.appendChild(div);
+  });
+  showView('survey');
+}
+
+function selectAnswer(qIdx, val) {
+  answers[qIdx] = val;
+  for (let v = 1; v <= 5; v++) {
+    const btn = document.getElementById(`lbtn-${qIdx}-${v}`);
+    if (!btn) continue;
+    const sel = v === val;
+    btn.style.background  = sel ? vl() : '';
+    btn.style.borderColor = sel ? vc() : '';
+    btn.querySelector('.lnum').style.color = sel ? vc() : '';
+    btn.querySelector('.llbl').style.color = sel ? vc() : '';
+  }
+  const card = document.getElementById('qcard-' + qIdx);
+  if (card) card.style.borderColor = vc() + '99';
+  const badge = document.getElementById('badge-' + qIdx);
+  if (badge) { badge.style.background = vl(); badge.style.color = vc(); badge.style.borderColor = vc() + '55'; }
+
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('prog-label').textContent = done + ' of 5';
+  document.getElementById('prog-bar').style.width = (done / 5 * 100) + '%';
+  const btn = document.getElementById('submit-btn');
+  if (done === 5) {
+    btn.disabled = false; btn.style.background = vc(); btn.style.color = '#fff';
+    btn.textContent = 'Submit Survey →';
+  } else {
+    btn.disabled = true; btn.style.background = '#e0e0ec'; btn.style.color = '#999';
+    btn.textContent = `Answer all scenarios to continue (${5 - done} remaining)`;
+  }
+}
+
+async function submitSurvey() {
+  if (answers.some(a => a === null)) return;
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  document.getElementById('submit-err').style.display = 'none';
+  if (!CONFIGURED) { showView('done'); return; }
+  try {
+    const current = await binRead();
+    current.push({ version, answers, ts: new Date().toISOString() });
+    await binWrite(current);
+    showView('done');
+  } catch (e) {
+    btn.disabled = false; btn.textContent = 'Submit Survey →';
+    document.getElementById('submit-err').style.display = 'block';
+  }
+}
+
+// ── Results ────────────────────────────────────────────────────────────────
+async function loadResults() {
+  showView('results');
+  const loadEl = document.getElementById('results-loading');
+  const emptyEl = document.getElementById('results-empty');
+  const contentEl = document.getElementById('results-content');
+  loadEl.style.display = 'flex'; emptyEl.style.display = 'none'; contentEl.style.display = 'none';
+  if (!CONFIGURED) { loadEl.style.display = 'none'; emptyEl.style.display = 'block'; return; }
+  try {
+    allData = await binRead();
+  } catch (e) { allData = []; }
+  loadEl.style.display = 'none';
+  if (!allData.length) { emptyEl.style.display = 'block'; return; }
+  renderResults();
+  contentEl.style.display = 'block';
+}
+
+function avg(arr) { return arr.length ? arr.reduce((s,v)=>s+v,0)/arr.length : null; }
+function qAvg(vData, i) { return vData.length ? avg(vData.map(r=>r.answers[i])) : null; }
+
+function renderResults() {
+  const vA = allData.filter(r => r.version === 'A');
+  const vB = allData.filter(r => r.version === 'B');
+  const ovA = vA.length ? avg(vA.flatMap(r=>r.answers)) : null;
+  const ovB = vB.length ? avg(vB.flatMap(r=>r.answers)) : null;
+  const diff = ovA !== null && ovB !== null ? ovA - ovB : null;
+
+  document.getElementById('stats-grid').innerHTML = [
+    { label:'Total responses',       val:allData.length,                                          color:'var(--ink)' },
+    { label:'Version A (positive)',  val:vA.length,                                               color:AC },
+    { label:'Version B (negative)',  val:vB.length,                                               color:BC },
+    { label:'Mean difference (A−B)', val:diff!==null?(diff>=0?'+':'')+diff.toFixed(2):'—',        color:'var(--ink)' }
+  ].map(c=>`<div class="metric-card"><div class="metric-label">${c.label}</div><div class="metric-val" style="color:${c.color}">${c.val}</div></div>`).join('');
+
+  document.getElementById('ver-cards').innerHTML = [
+    ovA!==null?`<div style="background:${AL};border:1px solid ${AC}44;border-radius:8px;padding:12px 16px"><p style="font-size:10px;font-weight:600;color:${AC};text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">Version A — Positive framing</p><p style="font-size:24px;font-weight:600;color:${AC}">${ovA.toFixed(2)} <span style="font-size:12px;font-weight:400">overall avg</span></p></div>`:'',
+    ovB!==null?`<div style="background:${BL};border:1px solid ${BC}44;border-radius:8px;padding:12px 16px"><p style="font-size:10px;font-weight:600;color:${BC};text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">Version B — Negative framing</p><p style="font-size:24px;font-weight:600;color:${BC}">${ovB.toFixed(2)} <span style="font-size:12px;font-weight:400">overall avg</span></p></div>`:''
+  ].join('');
+
+  renderChart(vA, vB);
+
+  document.getElementById('results-table').innerHTML = `
+    <thead><tr>
+      <th>Scenario</th>
+      <th style="text-align:center;color:${AC}">Positive avg</th>
+      <th style="text-align:center;color:${BC}">Negative avg</th>
+      <th style="text-align:center">Difference</th>
+    </tr></thead><tbody>
+    ${SCENARIOS.map((s,i)=>{
+      const aA=qAvg(vA,i), aB=qAvg(vB,i);
+      const d=aA!==null&&aB!==null?aA-aB:null;
+      const dc=d!==null?(d>0.05?'#2d5a0e':d<-0.05?BC:'#888'):'#888';
+      return `<tr>
+        <td><strong>Q${i+1}</strong><span style="color:#888;margin-left:6px">${s.topic}</span></td>
+        <td style="text-align:center;font-weight:600;color:${AC}">${aA!==null?aA.toFixed(2):'—'}</td>
+        <td style="text-align:center;font-weight:600;color:${BC}">${aB!==null?aB.toFixed(2):'—'}</td>
+        <td style="text-align:center;font-weight:600;color:${dc}">${d!==null?(d>=0?'+':'')+d.toFixed(2):'—'}</td>
+      </tr>`;
+    }).join('')}
+    </tbody>`;
+}
+
+function renderChart(vA, vB) {
+  const svg=document.getElementById('bar-chart');
+  const W=640,H=180,padL=36,padR=16,padT=14,padB=30;
+  const innerH=H-padT-padB, groupW=(W-padL-padR)/5;
+  const barW=Math.min(30,(groupW-28)/2);
+  const scY=v=>padT+innerH-(v/5)*innerH;
+  let out='';
+  for(let v=1;v<=5;v++){
+    const y=scY(v),n=v===3;
+    out+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="${n?'#bbb':'#eee'}" stroke-width="${n?1.5:1}" ${n?'stroke-dasharray="5 4"':''}/>`;
+    out+=`<text x="${padL-6}" y="${y+4}" font-size="10" fill="#aaa" text-anchor="end">${v}</text>`;
+  }
+  SCENARIOS.forEach((_,i)=>{
+    const cx=padL+(i+0.5)*groupW, aA=qAvg(vA,i), aB=qAvg(vB,i);
+    const bot=scY(0), xA=cx-barW-3, xB=cx+3;
+    if(aA!==null){const top=scY(aA);out+=`<rect x="${xA}" y="${top}" width="${barW}" height="${bot-top}" fill="${AC}" rx="2"/><text x="${xA+barW/2}" y="${top-4}" font-size="9.5" fill="${AC}" text-anchor="middle" font-weight="600">${aA.toFixed(1)}</text>`;}
+    if(aB!==null){const top=scY(aB);out+=`<rect x="${xB}" y="${top}" width="${barW}" height="${bot-top}" fill="${BC}" rx="2"/><text x="${xB+barW/2}" y="${top-4}" font-size="9.5" fill="${BC}" text-anchor="middle" font-weight="600">${aB.toFixed(1)}</text>`;}
+    out+=`<text x="${cx}" y="${H-4}" font-size="11" fill="#888" text-anchor="middle">Q${i+1}</text>`;
+  });
+  out+=`<line x1="${padL}" y1="${scY(0)}" x2="${W-padR}" y2="${scY(0)}" stroke="#ddd" stroke-width="1"/>`;
+  svg.innerHTML=out;
+}
+
+function exportCSV() {
+  const rows=[['version','q1','q2','q3','q4','q5','timestamp'],...allData.map(r=>[r.version,...r.answers,r.ts])];
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'})),download:'framing_effect_results.csv'});
+  a.click();
+}
+
+if (CONFIGURED) showView('consent');
+</script>
+</body>
+</html>
